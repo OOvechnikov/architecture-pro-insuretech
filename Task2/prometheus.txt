@@ -1,0 +1,9 @@
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+
+helm install prometheus prometheus-community/kube-prometheus-stack --namespace kube-system --set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false --set grafana.adminPassword=admin --set prometheus.service.type=NodePort --set grafana.service.type=NodePort
+
+helm install prometheus-adapter prometheus-community/prometheus-adapter --namespace kube-system --set prometheus.url=http://prometheus-operated.kube-system.svc.cluster.local --set prometheus.port=9090 --set metricsRelistInterval=30s
+
+helm upgrade --install prometheus-adapter prometheus-community/prometheus-adapter --namespace kube-system -f adapter-values.yaml
+
+kubectl apply -f servicemonitor.yaml
